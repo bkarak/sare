@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="sare" default="release">
+    <description>
+        SARE - Simple API for Regular Expressions
+        Vassilios Karakoidas (vassilios.karakoidas@gmail.com) - http://bkarak.wizhut.com/
+    </description>
+
+    <!-- Property Declaration -->
+    <property name="build" location="${basedir}/build" />
+    <property name="src" location="${basedir}/src" />
+    <property name="jar.file" location="${basedir}/sare.jar" />
+
+    <!-- Compile and produce jar -->
+    <target name="release">
+        <echo>Compiling Simple API for Regular Expressions</echo>
+        <mkdir dir="${build}" />
+        <javac srcdir="${src}" destdir="${build}" source="1.6" target="1.6" debug="off" optimize="on" />
+        <jar basedir="${build}" destfile="${jar.file}" />
+    </target>
+
+    <target name="clean">
+        <echo>Cleaning the Project</echo>
+        <delete file="${jar.file}" />
+        <delete>
+            <fileset dir="${build}" includes="**/*"/>
+        </delete>
+    </target>
+</project>
