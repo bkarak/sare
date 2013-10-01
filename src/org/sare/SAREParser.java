@@ -1,10 +1,12 @@
 package org.sare;
 
+import org.sare.errors.DefaultSAREError;
+import org.sare.errors.SAREError;
+
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 import java.util.regex.PatternSyntaxException;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Collection;
 import java.io.InputStream;
 import java.io.BufferedReader;
@@ -56,7 +58,7 @@ public class SAREParser {
         GroupActionList gal = action.get(new Integer(act));
         if(gal == null) {
             gal = new GroupActionList(act);
-            action.put(new Integer(act),gal);
+            action.put(act, gal);
         }
         gal.register(gai);
     }
@@ -97,7 +99,7 @@ public class SAREParser {
         try {
             int avail = is.available();
             byte[] arr = new byte[avail];
-            is.read(arr,0,avail);
+            is.read(arr, 0, avail);
             result = find(new String(arr));
         } catch (Exception e) {
             error.error(pattern.pattern(),e);
@@ -142,9 +144,8 @@ public class SAREParser {
      */
     private void start() {
         Collection<GroupActionList> col = action.values();
-        Iterator<GroupActionList> colIterator = col.iterator();
-        while(colIterator.hasNext()) {
-            colIterator.next().start();
+        for (GroupActionList aCol : col) {
+            aCol.start();
         }
     }
 
@@ -155,9 +156,8 @@ public class SAREParser {
      */
     private void end() {
         Collection<GroupActionList> col = action.values();
-        Iterator<GroupActionList> colIterator = col.iterator();
-        while(colIterator.hasNext()) {
-            colIterator.next().end();
+        for (GroupActionList aCol : col) {
+            aCol.end();
         }
     }
 

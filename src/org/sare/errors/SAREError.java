@@ -1,4 +1,4 @@
-package org.sare;
+package org.sare.errors;
 
 /**
  *
