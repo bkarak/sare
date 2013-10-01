@@ -63,9 +63,8 @@ public class GroupActionList extends ArrayList<GroupActionInterface>{
      * Execute end() for all registered interfaces
      */
     public void end() {
-        int c = size();
-        for(int i = 0;i < c;i++) {
-            get(i).end();
+        for (GroupActionInterface groupActionInterface : this) {
+            groupActionInterface.end();
         }
     }
 
@@ -73,7 +72,6 @@ public class GroupActionList extends ArrayList<GroupActionInterface>{
      * Execute find() for all registered interfaces
      */
     public void match(int count, String full, String group) {
-        int c = size();
         for (GroupActionInterface groupActionInterface : this) {
             groupActionInterface.match(count, full, group);
         }

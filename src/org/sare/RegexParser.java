@@ -12,12 +12,12 @@ import java.io.InputStream;
 import java.io.BufferedReader;
 
 /**
- * The SAREParser (Simple API for Regular Expressions) class (java.util.regex version)
+ * The RegexParser (Simple API for Regular Expressions) class (java.util.regex version)
  *
  * @author Vassilios Karakoidas (vassilios.karakoidas@gmail.com)
  * @see java.util.regex
  */
-public class SAREParser {
+public class RegexParser {
     private Pattern pattern;
     private HashMap<Integer,GroupActionList> action;
     private SAREError error = new DefaultSAREError();
@@ -27,7 +27,7 @@ public class SAREParser {
      *
      * @param regex the input regular expressions
      */
-    public SAREParser(String regex) {
+    public RegexParser(String regex) {
         try {
             pattern = Pattern.compile(regex);
             action = new HashMap<Integer,GroupActionList>();
@@ -42,7 +42,7 @@ public class SAREParser {
      * @param pattern the compiled Regular Expression
      * @see java.util.regex.Pattern
      */
-    public SAREParser(Pattern pattern) {
+    public RegexParser(Pattern pattern) {
         this.pattern = pattern;
         action = new HashMap<Integer,GroupActionList>();
     }
