@@ -5,7 +5,7 @@ package org.sare;
  *
  * @author Vassilios Karakoidas (vassilios.karakoidas@gmail.com)
  */
-public interface GroupActionInterface {
+public interface IGroupAction {
     /**
      * Executed once, just before the match initiates
      */

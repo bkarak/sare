@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 /**
- * Container class for GroupActionInterface instances
+ * Container class for IGroupAction instances
  *
  * @author Vassilios Karakoidas (vassilios.karakoidas@gmail.com)
- * @see GroupActionInterface
+ * @see IGroupAction
  */
-public class GroupActionList extends ArrayList<GroupActionInterface>{
+public class ActionList extends ArrayList<IGroupAction>{
     private int group;
 
     /**
@@ -17,17 +17,17 @@ public class GroupActionList extends ArrayList<GroupActionInterface>{
      *
      * @param group group identifier
      */
-    public GroupActionList(int group) {
+    public ActionList(int group) {
         this.group = group;
     }
 
     /**
      * registers an ActionGroupInterface to the group
      *
-     * @param gai the GroupActionInterface instance
-     * @see GroupActionInterface
+     * @param gai the IGroupAction instance
+     * @see IGroupAction
      */
-    public void register(GroupActionInterface gai) {
+    public void register(IGroupAction gai) {
         add(gai);
     }
 
@@ -36,8 +36,9 @@ public class GroupActionList extends ArrayList<GroupActionInterface>{
      *
      * @return the iterator
      */
-    public Iterator<GroupActionInterface> iterator() {
-        return iterator();
+    @Override
+    public Iterator<IGroupAction> iterator() {
+        return this.listIterator();
     }
 
     /**
@@ -54,8 +55,8 @@ public class GroupActionList extends ArrayList<GroupActionInterface>{
      */
     public void start() {
         int c = size();
-        for (GroupActionInterface groupActionInterface : this) {
-            groupActionInterface.start();
+        for (IGroupAction IGroupAction : this) {
+            IGroupAction.start();
         }
     }
 
@@ -63,8 +64,8 @@ public class GroupActionList extends ArrayList<GroupActionInterface>{
      * Execute end() for all registered interfaces
      */
     public void end() {
-        for (GroupActionInterface groupActionInterface : this) {
-            groupActionInterface.end();
+        for (IGroupAction IGroupAction : this) {
+            IGroupAction.end();
         }
     }
 
@@ -72,8 +73,8 @@ public class GroupActionList extends ArrayList<GroupActionInterface>{
      * Execute find() for all registered interfaces
      */
     public void match(int count, String full, String group) {
-        for (GroupActionInterface groupActionInterface : this) {
-            groupActionInterface.match(count, full, group);
+        for (IGroupAction IGroupAction : this) {
+            IGroupAction.match(count, full, group);
         }
     }
 }

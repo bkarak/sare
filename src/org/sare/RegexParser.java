@@ -19,7 +19,7 @@ import java.io.BufferedReader;
  */
 public class RegexParser {
     private Pattern pattern;
-    private HashMap<Integer,GroupActionList> action;
+    private HashMap<Integer,ActionList> action;
     private SAREError error = new DefaultSAREError();
 
     /**
@@ -30,7 +30,7 @@ public class RegexParser {
     public RegexParser(String regex) {
         try {
             pattern = Pattern.compile(regex);
-            action = new HashMap<Integer,GroupActionList>();
+            action = new HashMap<Integer,ActionList>();
         } catch (PatternSyntaxException pse) {
             error.error(regex,pse);
         }
@@ -44,20 +44,20 @@ public class RegexParser {
      */
     public RegexParser(Pattern pattern) {
         this.pattern = pattern;
-        action = new HashMap<Integer,GroupActionList>();
+        action = new HashMap<Integer,ActionList>();
     }
 
     /**
      * Registers an action for a specific group
      *
      * @param act the target group
-     * @param gai the instance of the class that implements the interface GroupActionInterface
-     * @see GroupActionInterface
+     * @param gai the instance of the class that implements the interface IGroupAction
+     * @see IGroupAction
      */
-    public void registerAction(int act,GroupActionInterface gai) {
-        GroupActionList gal = action.get(new Integer(act));
+    public void registerAction(int act,IGroupAction gai) {
+        ActionList gal = action.get(new Integer(act));
         if(gal == null) {
-            gal = new GroupActionList(act);
+            gal = new ActionList(act);
             action.put(act, gal);
         }
         gal.register(gai);
@@ -140,11 +140,11 @@ public class RegexParser {
     /**
      * executes start() method for all registered actions
      *
-     * @see GroupActionInterface
+     * @see IGroupAction
      */
     private void start() {
-        Collection<GroupActionList> col = action.values();
-        for (GroupActionList aCol : col) {
+        Collection<ActionList> col = action.values();
+        for (ActionList aCol : col) {
             aCol.start();
         }
     }
@@ -152,11 +152,11 @@ public class RegexParser {
     /**
      * executes end() method for all registered actions
      *
-     * @see GroupActionInterface
+     * @see IGroupAction
      */
     private void end() {
-        Collection<GroupActionList> col = action.values();
-        for (GroupActionList aCol : col) {
+        Collection<ActionList> col = action.values();
+        for (ActionList aCol : col) {
             aCol.end();
         }
     }
@@ -175,7 +175,7 @@ public class RegexParser {
             matchCount++;
             int groupCount = matcher.groupCount();
             for(int i = 0;i <= groupCount;i++) {
-                GroupActionList gal = action.get(new Integer(i));
+                ActionList gal = action.get(new Integer(i));
                 if(gal == null) { continue; }
                 gal.match(i,matcher.group(0),matcher.group(i));
             }
