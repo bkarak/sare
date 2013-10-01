@@ -54,8 +54,8 @@ public class GroupActionList extends ArrayList<GroupActionInterface>{
      */
     public void start() {
         int c = size();
-        for(int i = 0;i < c;i++) {
-            get(i).start();
+        for (GroupActionInterface groupActionInterface : this) {
+            groupActionInterface.start();
         }
     }
 
@@ -74,8 +74,8 @@ public class GroupActionList extends ArrayList<GroupActionInterface>{
      */
     public void match(int count, String full, String group) {
         int c = size();
-        for(int i = 0;i < c;i++) {
-            get(i).match(count,full,group);
+        for (GroupActionInterface groupActionInterface : this) {
+            groupActionInterface.match(count, full, group);
         }
     }
 }
