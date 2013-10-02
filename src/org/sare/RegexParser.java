@@ -1,6 +1,6 @@
 package org.sare;
 
-import org.sare.errors.DefaultSAREError;
+import org.sare.errors.DefaultError;
 import org.sare.errors.SAREError;
 
 import java.util.regex.Pattern;
@@ -20,7 +20,7 @@ import java.io.BufferedReader;
 public class RegexParser {
     private Pattern pattern;
     private HashMap<Integer,ActionList> action;
-    private SAREError error = new DefaultSAREError();
+    private SAREError error = new DefaultError();
 
     /**
      * Standard Constructor

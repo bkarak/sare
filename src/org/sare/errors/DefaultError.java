@@ -5,11 +5,11 @@ package org.sare.errors;
  *
  * @author Vassilios Karakoidas (vassilios.karakoidas@gmail.com)
  */
-public class DefaultSAREError implements SAREError {
+public class DefaultError implements SAREError {
     /**
      * Standard constructor
      */
-    public DefaultSAREError() {
+    public DefaultError() {
         super();
     }
 

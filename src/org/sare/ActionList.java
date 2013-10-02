@@ -36,8 +36,7 @@ public class ActionList extends ArrayList<IGroupAction>{
      *
      * @return the iterator
      */
-    @Override
-    public Iterator<IGroupAction> iterator() {
+    public Iterator<IGroupAction> getIterator() {
         return this.listIterator();
     }
 
