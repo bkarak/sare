@@ -9,8 +9,9 @@ import java.util.Iterator;
  * @author Vassilios Karakoidas (vassilios.karakoidas@gmail.com)
  * @see IGroupAction
  */
-public class ActionList extends ArrayList<IGroupAction>{
+public class ActionList implements Iterable {
     private int group;
+    private ArrayList<IGroupAction> actionList;
 
     /**
      * Standard Constructor
@@ -19,6 +20,7 @@ public class ActionList extends ArrayList<IGroupAction>{
      */
     public ActionList(int group) {
         this.group = group;
+        this.actionList = new ArrayList<IGroupAction>();
     }
 
     /**
@@ -28,7 +30,7 @@ public class ActionList extends ArrayList<IGroupAction>{
      * @see IGroupAction
      */
     public void register(IGroupAction gai) {
-        add(gai);
+        this.actionList.add(gai);
     }
 
     /**
@@ -36,8 +38,8 @@ public class ActionList extends ArrayList<IGroupAction>{
      *
      * @return the iterator
      */
-    public Iterator<IGroupAction> getIterator() {
-        return this.listIterator();
+    public Iterator<IGroupAction> iterator() {
+        return this.actionList.listIterator();
     }
 
     /**
@@ -53,8 +55,7 @@ public class ActionList extends ArrayList<IGroupAction>{
      * Execute start() for all registered interfaces
      */
     public void start() {
-        int c = size();
-        for (IGroupAction IGroupAction : this) {
+        for (IGroupAction IGroupAction : this.actionList) {
             IGroupAction.start();
         }
     }
@@ -63,7 +64,7 @@ public class ActionList extends ArrayList<IGroupAction>{
      * Execute end() for all registered interfaces
      */
     public void end() {
-        for (IGroupAction IGroupAction : this) {
+        for (IGroupAction IGroupAction : this.actionList) {
             IGroupAction.end();
         }
     }
@@ -72,7 +73,7 @@ public class ActionList extends ArrayList<IGroupAction>{
      * Execute find() for all registered interfaces
      */
     public void match(int count, String full, String group) {
-        for (IGroupAction IGroupAction : this) {
+        for (IGroupAction IGroupAction : this.actionList) {
             IGroupAction.match(count, full, group);
         }
     }
