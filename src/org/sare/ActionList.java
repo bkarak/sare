@@ -24,7 +24,7 @@ public class ActionList implements Iterable {
     }
 
     /**
-     * registers an ActionGroupInterface to the group
+     * registers an IGroupAction to the group
      *
      * @param gai the IGroupAction instance
      * @see IGroupAction

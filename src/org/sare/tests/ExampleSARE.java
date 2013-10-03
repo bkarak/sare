@@ -12,11 +12,11 @@ public class ExampleSARE {
         RegexParser sare = new RegexParser(regex);
         ConsoleOut co = new ConsoleOut();
 
-        sare.registerAction(0, co);
-        sare.registerAction(1, co);
-        sare.registerAction(2, co);
-        sare.registerAction(3, co);
-        sare.registerAction(4, co);
+        sare.assignAction(0, co);
+        sare.assignAction(1, co);
+        sare.assignAction(2, co);
+        sare.assignAction(3, co);
+        sare.assignAction(4, co);
 
         sare.process(data);
     }

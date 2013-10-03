@@ -30,7 +30,7 @@ public class RegexParser {
     public RegexParser(String regex) {
         try {
             pattern = Pattern.compile(regex);
-            action = new HashMap<Integer,ActionList>();
+            action = new HashMap<Integer, ActionList>();
         } catch (PatternSyntaxException pse) {
             error.error(regex,pse);
         }
@@ -54,7 +54,7 @@ public class RegexParser {
      * @param gai the instance of the class that implements the interface IGroupAction
      * @see IGroupAction
      */
-    public void registerAction(int act, IGroupAction gai) {
+    public void assignAction(int act, IGroupAction gai) {
         ActionList gal = action.get(new Integer(act));
         if(gal == null) {
             gal = new ActionList(act);
@@ -128,7 +128,7 @@ public class RegexParser {
                 result += find(s);
             }
         } catch (Exception e) {
-            error.error(pattern.pattern(),e);
+            error.error(pattern.pattern(), e);
             return 0;
         }
 
