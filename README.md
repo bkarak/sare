@@ -39,6 +39,8 @@ class ConsoleOut implements IGroupAction {
 
 As you can see, SARE follows a variant of the visitor pattern. For each group defined in a regex, you can assign an object that implements the <code>IGroupAction</code> interface. When the method <code>process()</code> is invoked, the scan process begins and when a match is found, the specified IGroupAction is executed, through the <code>match</code> method.
 
+SARE at the time being uses the standard JSDK regular expression library (<code>java.util.regex.*</code>).
+
 This pattern provides an easy way to write less and more reusable code, when text processing is required. Current Version is 2.0. So feel free to download, experiment with the source and send me any comments.
 
 
