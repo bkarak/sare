@@ -43,5 +43,7 @@ SARE at the time being uses the standard JSDK regular expression library (<code>
 
 This pattern provides an easy way to write less and more reusable code, when text processing is required. Current Version is 2.0. So feel free to download, experiment with the source and send me any comments.
 
+This 
+
 
 
