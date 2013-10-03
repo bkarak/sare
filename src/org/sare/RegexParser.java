@@ -54,7 +54,7 @@ public class RegexParser {
      * @param gai the instance of the class that implements the interface IGroupAction
      * @see IGroupAction
      */
-    public void registerAction(int act,IGroupAction gai) {
+    public void registerAction(int act, IGroupAction gai) {
         ActionList gal = action.get(new Integer(act));
         if(gal == null) {
             gal = new ActionList(act);
