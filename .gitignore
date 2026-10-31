@@ -1,6 +1,6 @@
+target/
+.DS_Store
+*.iml
+.idea/
 .project
 .classpath
-.idea
-sare.iml
-sare.jar
-build

@@ -1,24 +1,38 @@
-SARE - Simple API for Regular Expressions
-=========================================
+# SARE
 
-SARE stands for Simple API for Regular Expressions. Its an extension API that provides event based regular expression parsing. SARE's API is very simple. The developer need only to implement an interface, action event handler and attach it to the specific group of SARE parser. For example, the following listing shows have SARE can be used to parse each 4 digits from an IP address.
+Simple API for Regular Expressions. You assign an action to a capture group, and the parser
+calls it for every match that group takes part in, the way a SAX parser calls you for every
+element of an XML document. It runs on `java.util.regex`.
 
-<pre>
+SARE began in 2006 as a byproduct of [FIRE/J](https://github.com/bkarak/firej-oss), the DFA
+regular expression engine; this repository holds it from 2012.
+
+## Using it
+
+An action only has to implement `match`, so it can be a lambda:
+
+```java
+RegexParser sare = new RegexParser("(?<key>\\w+)=(?<value>\\w+)");
+sare.assignAction("key", (group, full, text) -> System.out.println("key " + text));
+sare.assignAction(2, (group, full, text) -> System.out.println("value " + text));
+
+int matches = sare.process("host=example, port=8080");   // 2
+```
+
+An action that needs to set something up or tear it down implements `start` and `end` too.
+This is the example from 2013, which reads the four numbers of an IPv4 address:
+
+```java
 public class ExampleSARE {
     public static void main(String[] args) {
-        String regex = "([0-9]+)\\.([0-9]+)\\.([0-9]+)\\.([0-9]+)";
-        String data  = "192.255.255.150";
-
-        RegexParser sare = new RegexParser(regex);
+        RegexParser sare = new RegexParser("([0-9]+)\\.([0-9]+)\\.([0-9]+)\\.([0-9]+)");
         ConsoleOut co = new ConsoleOut();
 
-        sare.assignAction(0, co);
-        sare.assignAction(1, co);
-        sare.assignAction(2, co);
-        sare.assignAction(3, co);
-        sare.assignAction(4, co);
+        for (int group = 0; group <= 4; group++) {
+            sare.assignAction(group, co);
+        }
 
-        sare.process(data);
+        sare.process("192.255.255.150");
     }
 }
 
@@ -31,30 +45,70 @@ class ConsoleOut implements IGroupAction {
         System.out.println("End");
     }
 
-    public void match(int count, String full, String group) {
-        System.out.println("[" + count + "] - " + group);
+    public void match(int group, String full, String text) {
+        System.out.println("[" + group + "] - " + text);
     }
 }
-</pre>
+```
 
-As you can see, SARE follows a variant of the visitor pattern. For each group defined in a regex, you can assign an object that implements the <code>IGroupAction</code> interface. When the method <code>process()</code> is invoked, the scan process begins and when a match is found, the specified IGroupAction is executed, through the <code>match</code> method.
+```
+Starting
+[0] - 192.255.255.150
+[1] - 192
+[2] - 255
+[3] - 255
+[4] - 150
+End
+```
 
-SARE at the time being uses the standard JSDK regular expression library (<code>java.util.regex.*</code>).
+What gets called, and when:
 
-This pattern provides an easy way to write less and more reusable code, when text processing is required. Current Version is 2.0. So feel free to download, experiment with the source and send me any comments.
+- **`start()`** once per `process` call on each action, however many groups it is assigned to,
+  and **`end()`** once after the last match. `end()` runs even when reading the input failed.
+- **`match(group, full, text)`** for each match, for each group of it that has actions: in group
+  order, and within a group in the order the actions were assigned. `full` is the whole match.
+  A group that took no part in a match, like `(b)` in `(a)|(b)` against `a`, is not reported.
+- An invalid expression is refused when you build the parser (`PatternSyntaxException`), and a
+  group the expression does not have when you assign to it.
 
-License
-=======
-Copyright (c) 2013, Vassilios Karakoidas (vassilios.karakoidas@gmail.com)
-All rights reserved.
+## Input
 
-Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+| Method | Reads |
+| --- | --- |
+| `process(CharSequence)` | the text as it is |
+| `process(BufferedReader)` | one line at a time: memory holds a line, not the input, and a match never spans a line break |
+| `process(InputStream)` | the whole stream, decoded as UTF-8, then matched as one text |
+| `process(InputStream, Charset)` | the same, in another encoding |
 
-+ Redistributions of source code must retain the above copyright
-+ Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-+ The names of its contributors may not be used to endorse or promote products derived from this software without specific prior written permission.
+Each returns the number of matches. A read error goes to the parser's error handler, which you
+set with `setError` and which prints on standard error by default. An exception thrown by an
+action is not a read error: it leaves `process` as it is.
 
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL Vassilios Karakoidas BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+## Where it stops
 
+- **For one action over a short text, the JDK is enough.** Since Java 9,
+  `pattern.matcher(text).results()` is a stream of matches. SARE earns its keep when several
+  actions share a parse, or when they have something to set up and tear down around it.
+- **Only `BufferedReader` input is streamed.** The other inputs are held in memory whole.
+- **Matching is `java.util.regex`'s**: leftmost-first, with backtracking.
 
+## Building
 
+JDK 21 or later, Maven:
+
+```bash
+mvn            # compiles, runs the 16 tests, writes target/sare-3.0.0.jar
+```
+
+There are no runtime dependencies.
+
+## What changed from 2.0
+
+Maven and JDK 21 instead of Ant and Java 1.6, actions as lambdas, named groups, and fixes for the
+defects 2.0 carried: reading from a `BufferedReader` never worked, `start` and `end` ran once per
+group instead of once per parse, and an invalid expression left a parser that failed later with a
+`NullPointerException`. [CHANGELOG.md](CHANGELOG.md) lists every change.
+
+## License
+
+BSD 3-Clause. See [LICENSE](LICENSE).
